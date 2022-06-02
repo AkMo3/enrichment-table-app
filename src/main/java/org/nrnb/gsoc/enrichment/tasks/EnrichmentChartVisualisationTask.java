@@ -1,20 +1,16 @@
 package org.nrnb.gsoc.enrichment.tasks;
 
 import org.cytoscape.model.CyTable;
-import org.cytoscape.work.AbstractTask;
-import org.cytoscape.work.ObservableTask;
-import org.cytoscape.work.TaskMonitor;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.title.TextTitle;
-import org.jfree.chart.ui.ApplicationFrame;
 import org.jfree.chart.ui.HorizontalAlignment;
-import org.jfree.chart.ui.UIUtils;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class EnrichmentChartVisualisationTask extends ApplicationFrame {
+public class EnrichmentChartVisualisationTask extends JFrame {
     public final JFreeChart enrichmentChart;
 
     public EnrichmentChartVisualisationTask(CyTable enrichmentTable) {
