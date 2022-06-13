@@ -1,31 +1,31 @@
 package org.nrnb.gsoc.enrichment.tasks;
 
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.service.util.CyServiceRegistrar;
-import org.cytoscape.work.*;
-import org.cytoscape.application.swing.*;
-import org.cytoscape.model.*;
-import org.nrnb.gsoc.enrichment.utils.EtLogger;
-import org.nrnb.gsoc.enrichment.utils.ModelUtils;
-import org.nrnb.gsoc.enrichment.tasks.EnrichmentTask;
-import org.nrnb.gsoc.enrichment.ui.EnrichmentCytoPanel;
-import org.nrnb.gsoc.enrichment.model.EnrichmentTerm;
-import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
+import org.cytoscape.work.AbstractTask;
 import org.cytoscape.work.ObservableTask;
+import org.cytoscape.work.ProvidesTitle;
+import org.cytoscape.work.TaskIterator;
+import org.cytoscape.work.TaskManager;
+import org.cytoscape.work.TaskMonitor;
+import org.cytoscape.work.Tunable;
 import org.cytoscape.work.json.JSONResult;
-
-
 import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.ListSingleSelection;
-import org.cytoscape.work.TaskIterator;
+import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
+import org.nrnb.gsoc.enrichment.ui.EnrichmentCytoPanel;
+import org.nrnb.gsoc.enrichment.utils.ModelUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 /**
@@ -157,7 +157,6 @@ public class EnrichmentAdvancedOptionsTask extends AbstractTask implements Obser
             ModelUtils.setNetGeneIDColumn(network, geneID.getSelectedValue().toString());
             ModelUtils.setNetNoIEA(network, no_iea);
             ModelUtils.setNetUserThreshold(network, user_threshold.getValue());
-            EtLogger.setMinimumLogLevel(logLevel.getSelectedValue());
             if(scientificNametoID.containsKey(organism.getSelectedValue())){
                 //System.out.println(organism.getSelectedValue());
                 ModelUtils.setNetOrganism(network,scientificNametoID.get(organism.getSelectedValue()));

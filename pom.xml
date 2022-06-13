@@ -203,5 +203,16 @@
             <artifactId>commons-compress</artifactId>
             <version>1.19</version>
         </dependency>
+        <dependency>
+            <groupId>org.ops4j.pax.logging</groupId>
+            <artifactId>pax-logging-api</artifactId>
+            <version>1.5.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.cytoscape</groupId>
+            <artifactId>application-api</artifactId>
+            <version>3.9.0</version>
+        </dependency>
     </dependencies>
 </project>

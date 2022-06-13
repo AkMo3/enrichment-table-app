@@ -6,24 +6,27 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.log4j.Logger;
+import org.cytoscape.application.CyUserLog;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyNode;
 import org.cytoscape.work.TaskMonitor;
-
 import org.json.simple.JSONArray;
-import org.json.simple.JSONValue;
 import org.json.simple.JSONObject;
+import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.nrnb.gsoc.enrichment.constants.APP_CONSTANTS;
-import org.nrnb.gsoc.enrichment.utils.EtLogger;
 import org.nrnb.gsoc.enrichment.utils.ModelUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.*;
-import java.util.logging.Level;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author ighosh98
@@ -32,6 +35,7 @@ import java.util.logging.Level;
 public class HTTPRequestEngine {
 
     private final String basicURL = "https://biit.cs.ut.ee/gprofiler/api/";
+//    private final Logger logger = Logger.getLogger(CyUserLog.NAME);
 
     public HTTPRequestEngine(){
     }
@@ -80,7 +84,6 @@ public class HTTPRequestEngine {
      * @return
      */
     public JSONObject makePostRequest(CyNetwork network,String endpoint , Map<String,Object> parameters, TaskMonitor monitor, boolean isBackgroundNeeded) {
-
         if(ModelUtils.getNetUserThreshold(network)!=null){
             parameters.put("user_threshold",ModelUtils.getNetUserThreshold(network));
         }
@@ -138,7 +141,7 @@ public class HTTPRequestEngine {
         String url = urlConverter.toString();
         HttpPost httpPost = new HttpPost(url);
         String jsonBody = JSONValue.toJSONString(parameters);
-        EtLogger.log(Level.INFO, jsonBody);
+//        logger.debug(jsonBody);
         StringEntity entity = null;
         try {
             entity = new StringEntity(jsonBody);
@@ -165,6 +168,7 @@ public class HTTPRequestEngine {
             monitor.showMessage(TaskMonitor.Level.ERROR, "Got "+
                     response.getStatusLine().getStatusCode()+" code from server");
             monitor.setStatusMessage("Invalid Query Parameters");
+//            logger.info("Response received from gprofiler.");
             return null;
         }
         JSONObject jsonResponse=null;
@@ -173,6 +177,7 @@ public class HTTPRequestEngine {
         } catch (IOException | ParseException e) {
             e.printStackTrace();
             monitor.setStatusMessage("Could not fetch data. Check your internet connection");
+//            logger.error("Error! Some exception occurred while fetching response.");
         }
         return jsonResponse;
     }

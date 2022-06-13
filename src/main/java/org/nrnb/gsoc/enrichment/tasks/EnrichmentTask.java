@@ -1,6 +1,8 @@
 package org.nrnb.gsoc.enrichment.tasks;
 
+import org.apache.log4j.Logger;
 import org.cytoscape.application.CyApplicationManager;
+import org.cytoscape.application.CyUserLog;
 import org.cytoscape.application.swing.*;
 import org.cytoscape.model.*;
 import org.cytoscape.model.events.RowsSetListener;
@@ -18,7 +20,6 @@ import org.nrnb.gsoc.enrichment.RequestEngine.HTTPRequestEngine;
 import org.nrnb.gsoc.enrichment.RequestEngine.ScheduledRequestEngine;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm;
 import org.nrnb.gsoc.enrichment.ui.EnrichmentCytoPanel;
-import org.nrnb.gsoc.enrichment.utils.EtLogger;
 import org.nrnb.gsoc.enrichment.utils.ModelUtils;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
 import java.awt.*;
@@ -160,7 +161,8 @@ public class EnrichmentTask extends AbstractTask implements ObservableTask {
 		List<Long> nodesToFilter = new ArrayList<Long>();
 		nodeList = nodesToFilterBy.getSelectedValues();
 		monitor.setTitle("gProfiler Enrichment Analysis");
-		EtLogger.log(Level.SEVERE, "Start of Enrichment Task");
+		final Logger logger = Logger.getLogger(CyUserLog.NAME);
+		logger.info("Start of Enrichment Task");
 
 		if(nodeList.size()>0){
 			for (CyNode node : nodeList) {
