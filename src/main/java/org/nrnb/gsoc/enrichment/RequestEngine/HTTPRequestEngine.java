@@ -95,6 +95,11 @@ public class HTTPRequestEngine {
             parameters.put("no_iea",true);
         }
 
+        if(ModelUtils.getNetNoEvidences(network)!=null){
+            parameters.put("no_evidences",ModelUtils.getNetNoEvidences(network));
+        } else{
+            parameters.put("no_evidences", true);
+        }
 
         if(ModelUtils.getNetSignificanceThresholdMethod(network)!=null){
             parameters.put("significance_threshold_method",ModelUtils.getNetSignificanceThresholdMethod(network));
