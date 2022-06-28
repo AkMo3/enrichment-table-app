@@ -17,6 +17,7 @@ import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.json.JSONResult;
 import org.cytoscape.work.util.ListMultipleSelection;
+import org.nrnb.gsoc.enrichment.constants.EVIDENCE_CODES;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
 import org.nrnb.gsoc.enrichment.ui.EnrichmentCytoPanel;
@@ -64,13 +65,8 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
         applicationManager = registrar.getService(CyApplicationManager.class);
         this.network = applicationManager.getCurrentNetwork();
         this.enrichmentPanel = panel;
-        final CyColumn evidenceColumn = ModelUtils.getEnrichmentTable(registrar, network, TermSource.ALL.getTable())
-                .getColumn(EnrichmentTerm.colTermID);
-        System.out.println(evidenceColumn.getValues(String.class).size());
-
-        // TODO: Create EVIDENCE CODE final class as per GProfiler
-        final Set<String> evidenceCodeList = new TreeSet<>(evidenceColumn.getValues(String.class));
-        this.evidenceCodes = new ListMultipleSelection<>(new ArrayList<>(evidenceCodeList));
+        List<String> evidenceCodes = EVIDENCE_CODES.stringValue();
+        this.evidenceCodes = new ListMultipleSelection<>(evidenceCodes);
     }
 
 
@@ -81,7 +77,7 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
                 + categories.getSelectedValues()) + " , evidence code: "
                 + evidenceCodes.getSelectedValues());
         List<TermSource> categoryList = categories.getSelectedValues();
-        HashSet<String> evidenceList = new HashSet<>(evidenceCodes.getSelectedValues());
+        List<String> evidenceList = new ArrayList<>(evidenceCodes.getSelectedValues());
         if (enrichmentPanel == null) {
             CySwingApplication swingApplication = registrar.getService(CySwingApplication.class);
             CytoPanel cytoPanel = swingApplication.getCytoPanel(CytoPanelName.SOUTH);

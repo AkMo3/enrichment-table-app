@@ -96,7 +96,7 @@ public class HTTPRequestEngine {
         }
 
         if(ModelUtils.getNetNoEvidences(network)!=null){
-            parameters.put("no_evidences",ModelUtils.getNetNoEvidences(network));
+            parameters.put("no_evidences", ModelUtils.getNetNoEvidences(network));
         } else{
             parameters.put("no_evidences", true);
         }

@@ -69,10 +69,10 @@ public class EnrichmentTask extends AbstractTask implements ObservableTask {
 			exampleStringValue = "g_SCS")
 	public String significance_threshold_method;
 
-	@Tunable(description = "Skip lookup for evidence codes",context="nogui",
+	@Tunable(description = "Skip lookup for evidence codes",context="nogui",required = true,
 			longDescription = "Default true. If true, skips lookup for evidence codes. Speeds up queries," +
 					" if there is no interest in evidence codes. .",
-			exampleStringValue = "false")
+			exampleStringValue = "true")
 	public String no_evidences;
 
 	public ListMultipleSelection<CyNode> nodesToFilterBy;
@@ -321,6 +321,7 @@ public class EnrichmentTask extends AbstractTask implements ObservableTask {
 			row.set(EnrichmentTerm.colGenes,term.getGenes());
 			row.set(EnrichmentTerm.colGenesSUID, term.getNodesSUID());
 			row.set(EnrichmentTerm.colNetworkSUID, network.getSUID());
+			row.set(EnrichmentTerm.colGenesEvidenceCode, term.getEvidenceCodes());
 		}
 		System.out.println("Enrichment Table Title: " + enrichmentTable.getTitle());
 		CytoPanel cytoPanel = swingApplication.getCytoPanel(CytoPanelName.SOUTH);
@@ -396,12 +397,12 @@ public class EnrichmentTask extends AbstractTask implements ObservableTask {
 		}
 
 		if (ModelUtils.getNetNoEvidences(network)==null && no_evidences == null) {
-			ModelUtils.setNetNoEvidences(network, false);
+			ModelUtils.setNetNoEvidences(network, true);
 		}
 		else if (ModelUtils.getNetNoEvidences(network)!=null && no_evidences == null){
-			ModelUtils.setNetNoEvidences(network,ModelUtils.getNetNoEvidences(network));
+			ModelUtils.setNetNoEvidences(network, ModelUtils.getNetNoEvidences(network));
 		} else{
-			ModelUtils.setNetNoEvidences(network,Boolean.parseBoolean(no_evidences));
+			ModelUtils.setNetNoEvidences(network, Boolean.parseBoolean(no_evidences));
 		}
 
 		if (ModelUtils.getNetSignificanceThresholdMethod(network)==null && significance_threshold_method == null) {

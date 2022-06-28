@@ -86,7 +86,8 @@ public class EnrichmentCytoPanel extends JPanel
             "the number of genes in the query that are annotated to the corresponding term",
             "the proportion of genes in the input list that are annotated to the function, defined as intersection_size/query_size",
             "the proportion of functionally annotated genes that the query recovers, defined as intersection_size/term_size",
-            "llist of query genes intersecting with terms"
+            "llist of query genes intersecting with terms",
+            "Evidence codes in the term"
     };
 
     // TODO: Quick settings options -> Drop down to select column and auto complete species
@@ -466,6 +467,9 @@ public class EnrichmentCytoPanel extends JPanel
         jTable.getColumnModel().getColumn(12).setMinWidth(0);
         jTable.getColumnModel().getColumn(12).setMaxWidth(0);
         jTable.getColumnModel().getColumn(12).setWidth(0);
+        jTable.getColumnModel().getColumn(13).setMinWidth(0);
+        jTable.getColumnModel().getColumn(13).setMaxWidth(0);
+        jTable.getColumnModel().getColumn(13).setWidth(0);
         jTable.setFillsViewportHeight(true);
         jTable.setAutoCreateRowSorter(true);
         jTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);

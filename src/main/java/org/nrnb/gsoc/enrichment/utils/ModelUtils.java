@@ -21,6 +21,8 @@ import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
+
 /**
  * @author ighosh98
  * @description
@@ -209,6 +211,10 @@ public class ModelUtils {
 
         if (enrichmentTable.getColumn(EnrichmentTerm.colGenes) == null) {
             enrichmentTable.createListColumn(EnrichmentTerm.colGenes, String.class, false);
+        }
+
+        if (enrichmentTable.getColumn(EnrichmentTerm.colGenesEvidenceCode) == null) {
+            enrichmentTable.createListColumn(EnrichmentTerm.colGenesEvidenceCode, String.class, false);
         }
     }
 
@@ -563,17 +569,15 @@ public class ModelUtils {
             if(enr.containsKey("name")){
                 currTerm.setName((String) enr.get("name"));
             } if(enr.containsKey("intersections")){
+                HashSet<String> evidenceCodes = new HashSet<>();
                 List<String> currGeneList = new ArrayList<String>();
                 List<Long> currNodeList = new ArrayList<Long>();
-                JSONArray genes = (JSONArray)enr.get("intersections");
-                System.out.println("Current Term Name: " + currTerm.getName());
-                System.out.println("Current Term Id: " + currTerm.getTermID());
+                JSONArray genes = (JSONArray)enr.get("intersections");;
                 for(int i=0;i<genes.size();i++){
-                    System.out.println("Genes for " + i + " intersection is: " + genes.get(i).toString());
                     if((genes.get(i)).toString().length()>2){
-                        System.out.println("Node name: " + nodeNameList.get(i));
-                        String enrGeneEnsemblID = (String)nodeNameList.get(i);
-                        String enrGeneNodeName = enrGeneEnsemblID;
+                        evidenceCodes.addAll(Arrays.stream(genes.get(i).toString().substring(1, genes.get(i).toString().length() - 1)
+                                .split(",")).collect(Collectors.toList()));
+                        String enrGeneNodeName = nodeNameList.get(i);
                         final Long nodeSUID = enrichmentNodesMap.get(enrGeneNodeName);
                         currNodeList.add(nodeSUID);
                         currGeneList.add(nodeNameList.get(i));
@@ -581,6 +585,7 @@ public class ModelUtils {
                 }
                 currTerm.setGenes(currGeneList);
                 currTerm.setNodesSUID(currNodeList);
+                currTerm.setEvidenceCodes(evidenceCodes);
             }
             results.add(currTerm);
             //System.out.println(currTerm.getDescription());
@@ -735,7 +740,7 @@ public class ModelUtils {
      */
     public static Boolean getNetNoEvidences(CyNetwork network) {
         if (network.getDefaultNetworkTable().getColumn(NET_NO_EVIDENCES) == null)
-            return null;
+            return true;
         return network.getRow(network).get(NET_NO_EVIDENCES, Boolean.class);
     }
 

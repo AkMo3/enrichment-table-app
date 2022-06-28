@@ -51,6 +51,7 @@ public class EnrichmentTableModel extends AbstractTableModel {
      * @return return value at the particular row and column of the enrichment table
      */
     public Object getValueAt(int row, int col) {
+        if (getRowCount() == 0) return null;
         final String colName = columnNames[col];
         final Long rowName = rowNames[row];
         if (colName.equals(EnrichmentTerm.colEffectiveDomainSize)) {
@@ -136,8 +137,7 @@ public class EnrichmentTableModel extends AbstractTableModel {
         }
         else if (colName.equals(EnrichmentTerm.colGenesSUID)) {
             return cyTable.getRow(rowName).getList(colName, Long.class);
-        }
-        else {
+        } else {
             return cyTable.getRow(rowName).get(colName, String.class);
         }
     }
@@ -237,14 +237,14 @@ public class EnrichmentTableModel extends AbstractTableModel {
         fireTableDataChanged();
     }
 
-    public void filterByEvidenceCode(Set<String> evidenceCodes) {
+    public void filterByEvidenceCode(List<String> evidenceCodes) {
         List<CyRow> rows = cyTable.getAllRows();
         Long[] rowArray = new Long[rows.size()];
         int i = 0;
         for (CyRow row : rows) {
-            // implement this again
-            String termSource = row.get(EnrichmentTerm.colTermID, String.class);
-            if (evidenceCodes.size() == 0 || evidenceCodes.contains(termSource)) {
+            List<String> termSource = row.get(EnrichmentTerm.colGenesEvidenceCode, List.class);
+            if (evidenceCodes.size() == 0 ||
+                    evidenceCodes.stream().anyMatch(e -> termSource.contains("\"" + e + "\""))) {
                 rowArray[i++] = row.get(EnrichmentTerm.colID, Long.class);
             }
         }
