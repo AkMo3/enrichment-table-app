@@ -56,13 +56,6 @@ public class EnrichmentAdvancedOptionsTask extends AbstractTask implements Obser
             tooltip = "<html>Uncheck to exclude inferred GO annotations.</html>")
     public boolean no_iea = false;
 
-    @Tunable(description = "Skip lookup for evidence codes",
-            longDescription = "The default (true) skips lookup for evidence codes. Speeds up queries," +
-                    " if there is no interest in evidence codes.",
-            groups = {"Optional settings"},
-            tooltip = "<html>Check to include evidence code lookup.</html>")
-    public boolean no_evidences = true;
-
     @Tunable(description = "Multiple testing correction",
             tooltip = "Select the multiple testing correction method.",
             longDescription = "The following multiple testing correction methods are supported: g_SCS (default), bonferroni and fdr.",
@@ -151,7 +144,6 @@ public class EnrichmentAdvancedOptionsTask extends AbstractTask implements Obser
             ModelUtils.setNetSignificanceThresholdMethod(network, significance_threshold_method.getSelectedValue());
             ModelUtils.setNetGeneIDColumn(network, geneID.getSelectedValue().toString());
             ModelUtils.setNetNoIEA(network, no_iea);
-            ModelUtils.setNetNoEvidences(network, no_evidences);
             ModelUtils.setNetUserThreshold(network, user_threshold.getValue());
             if(scientificNametoID.containsKey(organism.getSelectedValue())){
                 System.out.println("Organism selected value: " + organism.getSelectedValue());

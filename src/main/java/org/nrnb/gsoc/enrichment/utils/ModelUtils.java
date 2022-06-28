@@ -60,7 +60,6 @@ public class ModelUtils {
     public static String NET_USER_THRESHOLD = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR +  "User Threshold";
     public static String  NET_ALL_RESULTS = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR + "All Results";
     public static String  NET_MEASURE_UNDERREPRESENTATION = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR + "Measure Underrepresentation";
-    public static String NET_NO_EVIDENCES = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR + "No evidence code";
     // Create network view size threshold
     // See https://github.com/cytoscape/cytoscape-impl/blob/develop/core-task-impl/
     // src/main/java/org/cytoscape/task/internal/loadnetwork/AbstractLoadNetworkTask.java
@@ -568,8 +567,10 @@ public class ModelUtils {
             }
             if(enr.containsKey("name")){
                 currTerm.setName((String) enr.get("name"));
-            } if(enr.containsKey("intersections")){
-                HashSet<String> evidenceCodes = new HashSet<>();
+            }
+            HashSet<String> evidenceCodes = new HashSet<>();
+            if(enr.containsKey("intersections")){
+
                 List<String> currGeneList = new ArrayList<String>();
                 List<Long> currNodeList = new ArrayList<Long>();
                 JSONArray genes = (JSONArray)enr.get("intersections");;
@@ -585,8 +586,8 @@ public class ModelUtils {
                 }
                 currTerm.setGenes(currGeneList);
                 currTerm.setNodesSUID(currNodeList);
-                currTerm.setEvidenceCodes(evidenceCodes);
             }
+            currTerm.setEvidenceCodes(evidenceCodes);
             results.add(currTerm);
             //System.out.println(currTerm.getDescription());
         }
@@ -719,29 +720,6 @@ public class ModelUtils {
         if (network.getDefaultNetworkTable().getColumn(NET_NO_IEA) == null)
             return null;
         return network.getRow(network).get(NET_NO_IEA, Boolean.class);
-    }
-
-    /**
-     * Setter for {@code NET_NO_EVIDENCES}.
-     *
-     * @param network Network for which field to be set.
-     * @param noEvidenceCode Value to be set.
-     */
-    public static void setNetNoEvidences(CyNetwork network, Boolean noEvidenceCode) {
-        createColumnIfNeeded(network.getDefaultNetworkTable(), Boolean.class, NET_NO_EVIDENCES);
-        network.getRow(network).set(NET_NO_EVIDENCES, noEvidenceCode);
-    }
-
-    /**
-     * Getter for {@code NET_NO_EVIDENCES}.
-     *
-     * @param network Network from which value to be retrieved.
-     * @return Boolean value of field.
-     */
-    public static Boolean getNetNoEvidences(CyNetwork network) {
-        if (network.getDefaultNetworkTable().getColumn(NET_NO_EVIDENCES) == null)
-            return true;
-        return network.getRow(network).get(NET_NO_EVIDENCES, Boolean.class);
     }
 
     /**

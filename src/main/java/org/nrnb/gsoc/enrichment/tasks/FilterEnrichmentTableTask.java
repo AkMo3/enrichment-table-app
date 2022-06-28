@@ -6,7 +6,6 @@ import org.cytoscape.application.CyUserLog;
 import org.cytoscape.application.swing.CySwingApplication;
 import org.cytoscape.application.swing.CytoPanel;
 import org.cytoscape.application.swing.CytoPanelName;
-import org.cytoscape.model.CyColumn;
 import org.cytoscape.model.CyNetwork;
 import org.cytoscape.model.CyTable;
 import org.cytoscape.service.util.CyServiceRegistrar;
@@ -18,18 +17,13 @@ import org.cytoscape.work.Tunable;
 import org.cytoscape.work.json.JSONResult;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.nrnb.gsoc.enrichment.constants.EVIDENCE_CODES;
-import org.nrnb.gsoc.enrichment.model.EnrichmentTerm;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
 import org.nrnb.gsoc.enrichment.ui.EnrichmentCytoPanel;
 import org.nrnb.gsoc.enrichment.ui.EnrichmentTableModel;
-import org.nrnb.gsoc.enrichment.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 
 public class FilterEnrichmentTableTask extends AbstractTask implements ObservableTask {
@@ -62,7 +56,7 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
 
     public FilterEnrichmentTableTask(final CyServiceRegistrar registrar, EnrichmentCytoPanel panel) {
         this.registrar = registrar;
-        applicationManager = registrar.getService(CyApplicationManager.class);
+        this.applicationManager = registrar.getService(CyApplicationManager.class);
         this.network = applicationManager.getCurrentNetwork();
         this.enrichmentPanel = panel;
         List<String> evidenceCodes = EVIDENCE_CODES.stringValue();

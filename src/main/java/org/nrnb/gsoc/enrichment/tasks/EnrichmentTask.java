@@ -69,12 +69,6 @@ public class EnrichmentTask extends AbstractTask implements ObservableTask {
 			exampleStringValue = "g_SCS")
 	public String significance_threshold_method;
 
-	@Tunable(description = "Skip lookup for evidence codes",context="nogui",required = true,
-			longDescription = "Default true. If true, skips lookup for evidence codes. Speeds up queries," +
-					" if there is no interest in evidence codes. .",
-			exampleStringValue = "true")
-	public String no_evidences;
-
 	public ListMultipleSelection<CyNode> nodesToFilterBy;
 
 	final Map<String, String> colSourceMap;
@@ -394,15 +388,6 @@ public class EnrichmentTask extends AbstractTask implements ObservableTask {
 			ModelUtils.setNetNoIEA(network,ModelUtils.getNetNoIEA(network));
 		} else{
 			ModelUtils.setNetNoIEA(network,Boolean.parseBoolean(no_iea));
-		}
-
-		if (ModelUtils.getNetNoEvidences(network)==null && no_evidences == null) {
-			ModelUtils.setNetNoEvidences(network, true);
-		}
-		else if (ModelUtils.getNetNoEvidences(network)!=null && no_evidences == null){
-			ModelUtils.setNetNoEvidences(network, ModelUtils.getNetNoEvidences(network));
-		} else{
-			ModelUtils.setNetNoEvidences(network, Boolean.parseBoolean(no_evidences));
 		}
 
 		if (ModelUtils.getNetSignificanceThresholdMethod(network)==null && significance_threshold_method == null) {
