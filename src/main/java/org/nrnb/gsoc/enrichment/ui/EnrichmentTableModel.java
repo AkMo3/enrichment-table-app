@@ -260,6 +260,96 @@ public class EnrichmentTableModel extends AbstractTableModel {
         return false;
     }
 
+    public void removeRedundantTerms(List<TermSource> sources, double cutoff) {
+        List<CyRow> rows = cyTable.getAllRows();
+        Long[] rowArray = new Long[rows.size()];
+        int i = 0;
+        for (CyRow row : rows) {
+            String termCategory = row.get(EnrichmentTerm.colSource, String.class);
+            if (sources.size() == 0 || inCategory(sources, termCategory)) {
+                rowArray[i] = row.get(EnrichmentTerm.colID, Long.class);
+                i++;
+            }
+        }
+
+        rowNames = removeRedundancy(rowArray, i, cutoff);
+
+        fireTableDataChanged();
+    }
+
+    private boolean inCategory(List<TermSource> categories, String termName) {
+        for (TermSource tc: categories) {
+            if (tc.getName().equals(termName))
+                return true;
+        }
+        return false;
+    }
+
+    private Long[] removeRedundancy(Long[] rowArray, int length, double cutoff) {
+        // Sort by pValue
+        Long[] sortedArray = pValueSort(rowArray, length);
+
+        // Initialize with the most significant term
+        List<Long> currentTerms = new ArrayList<Long>();
+        currentTerms.add(sortedArray[0]);
+        for (int i = 1; i < length; i++) {
+            if (jaccard(currentTerms, sortedArray[i]) < cutoff)
+                currentTerms.add(sortedArray[i]);
+        }
+        return(currentTerms.toArray(new Long[1]));
+    }
+
+    private Long[] pValueSort(Long[] rowArray, int length) {
+        // Already sorted, I think...
+        return Arrays.copyOf(rowArray, length);
+    }
+
+    // Two versions of jaccard similarity calculation.  This one
+    // looks at the maximum jaccard between the currently selected
+    // terms and the new term.
+    private double jaccard(List<Long> currentTerms, Long term) {
+        double maxJaccard = 0;
+        for (Long currentTerm: currentTerms)
+            maxJaccard = Math.max(maxJaccard, jaccard(currentTerm, term));
+        return maxJaccard;
+    }
+
+    // This version of the jaccard calculation returns the jaccard between
+    // all currently selected nodes and the nodes of the new term.
+    private double jaccard2(List<Long> currentTerms, Long term) {
+        Set<Long> currentNodes = new HashSet<Long>();
+        for (Long currentTerm: currentTerms) {
+            List<Long> nodes = cyTable.getRow(currentTerm).getList(EnrichmentTerm.colGenesSUID, Long.class);
+            currentNodes.addAll(nodes);
+        }
+        List<Long> newNodes = cyTable.getRow(term).getList(EnrichmentTerm.colGenesSUID, Long.class);
+        return jaccard2(currentNodes, newNodes);
+    }
+
+    private double jaccard2(Set<Long> currentNodes, List<Long> newNodes) {
+        int intersection = 0;
+        for (Long cn: newNodes) {
+            if (currentNodes.contains(cn))
+                intersection++;
+        }
+        double j = ((double)intersection) / (double)(currentNodes.size()+newNodes.size()-intersection);
+        return j;
+    }
+
+    private double jaccard(Long currentTerm, Long term) {
+        List<Long> currentNodes = cyTable.getRow(currentTerm).getList(EnrichmentTerm.colGenesSUID, Long.class);
+        List<Long> newNodes = cyTable.getRow(term).getList(EnrichmentTerm.colGenesSUID, Long.class);
+        if (currentNodes == null || newNodes == null)
+            return 0;
+
+        int intersection = 0;
+        for (Long cn: currentNodes) {
+            if (newNodes.contains(cn))
+                intersection++;
+        }
+        double j = ((double)intersection) / (double)(currentNodes.size()+newNodes.size()-intersection);
+        return j;
+    }
 
     /**
      * @description Initialize the data model

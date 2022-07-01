@@ -385,12 +385,19 @@ public class EnrichmentCytoPanel extends JPanel
 
         buttonsPanelRight.add(butExportTable);
         buttonsPanelRight.add(butAdvancedOptions);
+
         butExportTable.setEnabled(true);
         butFilter.setEnabled(true);
+
+        JPanel labelPanel = new JPanel();
+        JPanel labelAndButtonPanelRight = new JPanel();
+        labelAndButtonPanelRight.add(labelPanel, BorderLayout.EAST);
+        labelAndButtonPanelRight.add(buttonsPanelRight, BorderLayout.WEST);
+
         topPanel = new JPanel(new BorderLayout());
         topPanel.add(buttonsPanelLeft, BorderLayout.WEST);
         topPanel.add(buttonsPanelCenter, BorderLayout.CENTER);
-        topPanel.add(buttonsPanelRight, BorderLayout.EAST);
+        topPanel.add(labelAndButtonPanelRight, BorderLayout.EAST);
         // topPanel.add(boxTables, BorderLayout.EAST);
         this.add(topPanel, BorderLayout.NORTH);
 
@@ -432,6 +439,7 @@ public class EnrichmentCytoPanel extends JPanel
             labelRows.setHorizontalAlignment(JLabel.RIGHT);
             Font labelFont = labelRows.getFont();
             labelRows.setFont(labelFont.deriveFont((float)(labelFont.getSize() * 0.8)));
+            labelPanel.add(labelRows);
 
             mainPanel = new JPanel(new BorderLayout());
             scrollPane = new JScrollPane(currentTable);
@@ -600,13 +608,16 @@ public class EnrichmentCytoPanel extends JPanel
         if (tableModel == null)
             return;
         String labelTxt = "";
+        System.out.println("Update Label Rows: " + tableModel.getAllRowCount() + " : " +tableModel.getRowCount());
         if (tableModel.getAllRowCount() != tableModel.getRowCount()) {
             labelTxt = tableModel.getRowCount() + " rows ("+tableModel.getAllRowCount()+" before filtering)";
         } else {
             labelTxt = tableModel.getAllRowCount() + " rows";
         }
-        if (labelRows != null)
+        if (labelRows != null) {
             labelRows.setText(labelTxt);
+            System.out.println("Updated label rows");
+        }
     }
 
     @Override

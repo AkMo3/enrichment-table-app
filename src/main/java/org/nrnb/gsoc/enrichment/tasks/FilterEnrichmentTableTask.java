@@ -15,6 +15,7 @@ import org.cytoscape.work.ProvidesTitle;
 import org.cytoscape.work.TaskMonitor;
 import org.cytoscape.work.Tunable;
 import org.cytoscape.work.json.JSONResult;
+import org.cytoscape.work.util.BoundedDouble;
 import org.cytoscape.work.util.ListMultipleSelection;
 import org.nrnb.gsoc.enrichment.constants.EVIDENCE_CODES;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
@@ -41,6 +42,24 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
             gravity = 1.0
     )
     public ListMultipleSelection<String> evidenceCodes;
+
+    @Tunable(description = "Remove redundant terms",
+            tooltip = "Removes terms whose enriched genes significantly overlap with already selected terms.",
+            longDescription = "Removes terms whose enriched genes significantly overlap with already selected terms.",
+            exampleStringValue = "true",
+            gravity = 8.0)
+    public boolean removeOverlapping = false;
+
+    @Tunable(description = "Redundancy cutoff",
+            tooltip = "<html>This is the maximum Jaccard similarity that will be allowed <br/>"
+                    + "between a less significant term and a more significant term such that <br/>"
+                    + "the less significant term is kept in the list.</html>",
+            longDescription = "This is the maximum Jaccard similarity that will be allowed "
+                    + "between a less significant term and a more significant term such that "
+                    + "the less significant term is kept in the list.",
+            exampleStringValue="0.5",
+            params="slider=true", dependsOn="removeOverlapping=true", gravity = 9.0)
+    public BoundedDouble overlapCutoff = new BoundedDouble(0.0, 0.5, 1.0, false, false);
 
     private CyApplicationManager applicationManager;
     private EnrichmentCytoPanel enrichmentPanel;
@@ -84,9 +103,12 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
         if (tableModel == null) {
             monitor.showMessage(TaskMonitor.Level.ERROR, "Unable to find enrichment table!");
             logger.error("Unable to find enrichment table!");
+            return;
         }
         if (!categoryList.isEmpty()) tableModel.filter(categoryList);
         if (!evidenceList.isEmpty()) tableModel.filterByEvidenceCode(evidenceList);
+        if (removeOverlapping) tableModel.removeRedundantTerms(categories.getSelectedValues(),
+                overlapCutoff.getValue());
         logger.info("Filtering results completed");
     }
 
