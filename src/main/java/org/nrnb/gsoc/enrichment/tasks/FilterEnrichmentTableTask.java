@@ -35,8 +35,9 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
             gravity = 1.0)
     public ListMultipleSelection<TermSource> categories = new ListMultipleSelection<>(TermSource.getValues());
 
-    @Tunable(description = "Select evidence code",
-            tooltip = "Select the evidence codes to show",
+    @Tunable(description = "Select evidence code.",
+            tooltip = "Select the evidence codes to show in the table. If multiple codes are selected, those terms which " +
+                    "contains all the selected codes will be present in result.",
             exampleStringValue = "GO:0005737",
             gravity = 1.0
     )

@@ -244,7 +244,7 @@ public class EnrichmentTableModel extends AbstractTableModel {
         for (CyRow row : rows) {
             List<String> termSource = row.get(EnrichmentTerm.colGenesEvidenceCode, List.class);
             if (evidenceCodes.size() == 0 ||
-                    evidenceCodes.stream().anyMatch(e -> termSource.contains("\"" + e + "\""))) {
+                    evidenceCodes.stream().allMatch(e -> termSource.contains("\"" + e + "\""))) {
                 rowArray[i++] = row.get(EnrichmentTerm.colID, Long.class);
             }
         }
