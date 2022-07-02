@@ -13,9 +13,11 @@ import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.view.model.CyNetworkView;
 import org.cytoscape.view.model.CyNetworkViewManager;
 import org.cytoscape.view.model.View;
+import org.cytoscape.work.util.BoundedDouble;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.nrnb.gsoc.enrichment.RequestEngine.HTTPRequestEngine;
+import org.nrnb.gsoc.enrichment.constants.EVIDENCE_CODES;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
 
@@ -60,6 +62,10 @@ public class ModelUtils {
     public static String NET_USER_THRESHOLD = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR +  "User Threshold";
     public static String  NET_ALL_RESULTS = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR + "All Results";
     public static String  NET_MEASURE_UNDERREPRESENTATION = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR + "Measure Underrepresentation";
+
+    public static String NET_REMOVE_REDUNDANT = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR + "Remove Redundant Term";
+    public static String NET_REDUNDANT_CUTOFF = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR + "Redundant Term Cutoff";
+    public static String NET_SELECTED_EVIDENCE_CODES = ENRICHMENT_NAMESPACE + NAMESPACE_SEPARATOR + "Selected evidence codes";
     // Create network view size threshold
     // See https://github.com/cytoscape/cytoscape-impl/blob/develop/core-task-impl/
     // src/main/java/org/cytoscape/task/internal/loadnetwork/AbstractLoadNetworkTask.java
@@ -330,6 +336,11 @@ public class ModelUtils {
             return;
 
         table.createColumn(columnName, clazz, false);
+    }
+
+    public static void createListColumnIfNeeded(CyTable table, Class<?> clazz, String columnName) {
+        if (table.getColumn(columnName) != null) return;
+        table.createListColumn(columnName, clazz, false);
     }
 
     /**
@@ -722,6 +733,39 @@ public class ModelUtils {
         return network.getRow(network).get(NET_NO_IEA, Boolean.class);
     }
 
+    public static void setNetRemoveRedundant(CyNetwork network, Boolean removeRedundant) {
+        createColumnIfNeeded(network.getDefaultNetworkTable(), Boolean.class, NET_REMOVE_REDUNDANT);
+        network.getRow(network).set(NET_REMOVE_REDUNDANT, removeRedundant);
+    }
+
+    public static Boolean getNetRemoveRedundant(CyNetwork network) {
+        if (network.getDefaultNetworkTable().getColumn(NET_REMOVE_REDUNDANT) == null)
+            return false;
+        return network.getRow(network).get(NET_REMOVE_REDUNDANT, Boolean.class);
+    }
+
+    public static void setNetRedundantCutoff(CyNetwork network, Double removeRedundant) {
+        createColumnIfNeeded(network.getDefaultNetworkTable(), Double.class, NET_REDUNDANT_CUTOFF);
+        network.getRow(network).set(NET_REDUNDANT_CUTOFF, removeRedundant);
+    }
+
+    public static Double getNetRedundantCutoff(CyNetwork network) {
+        if (network.getDefaultNetworkTable().getColumn(NET_REDUNDANT_CUTOFF) == null)
+            return 0.5;
+        return network.getRow(network).get(NET_REDUNDANT_CUTOFF, Double.class);
+    }
+
+    public static void setNetSelectedEvidenceCodes(CyNetwork network, List<String> selectedEvidenceCodes) {
+        createListColumnIfNeeded(network.getDefaultNetworkTable(), String.class, NET_SELECTED_EVIDENCE_CODES);
+        network.getRow(network).set(NET_SELECTED_EVIDENCE_CODES, selectedEvidenceCodes);
+    }
+
+    public static List<String> getNetSelectedEvidenceCode(CyNetwork network) {
+        if (network.getDefaultNetworkTable().getColumn(NET_SELECTED_EVIDENCE_CODES) == null) {
+            return new ArrayList<>();
+        };
+        return network.getRow(network).getList(NET_SELECTED_EVIDENCE_CODES, String.class);
+    }
     /**
      * all_results setter
      */

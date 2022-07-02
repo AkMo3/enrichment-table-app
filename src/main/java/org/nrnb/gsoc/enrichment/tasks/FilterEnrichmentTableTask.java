@@ -1,5 +1,6 @@
 package org.nrnb.gsoc.enrichment.tasks;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.log4j.Logger;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.CyUserLog;
@@ -21,6 +22,7 @@ import org.nrnb.gsoc.enrichment.constants.EVIDENCE_CODES;
 import org.nrnb.gsoc.enrichment.model.EnrichmentTerm.TermSource;
 import org.nrnb.gsoc.enrichment.ui.EnrichmentCytoPanel;
 import org.nrnb.gsoc.enrichment.ui.EnrichmentTableModel;
+import org.nrnb.gsoc.enrichment.utils.ModelUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +50,7 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
             longDescription = "Removes terms whose enriched genes significantly overlap with already selected terms.",
             exampleStringValue = "true",
             gravity = 8.0)
-    public boolean removeOverlapping = false;
+    public boolean removeOverlapping;
 
     @Tunable(description = "Redundancy cutoff",
             tooltip = "<html>This is the maximum Jaccard similarity that will be allowed <br/>"
@@ -78,8 +80,11 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
         this.applicationManager = registrar.getService(CyApplicationManager.class);
         this.network = applicationManager.getCurrentNetwork();
         this.enrichmentPanel = panel;
-        List<String> evidenceCodes = EVIDENCE_CODES.stringValue();
-        this.evidenceCodes = new ListMultipleSelection<>(evidenceCodes);
+        List<String> evidenceCodesEnum = EVIDENCE_CODES.stringValue();
+        this.evidenceCodes = new ListMultipleSelection<>(evidenceCodesEnum);
+        evidenceCodes.setSelectedValues(ModelUtils.getNetSelectedEvidenceCode(network));
+        removeOverlapping = ModelUtils.getNetRemoveRedundant(network);
+        overlapCutoff.setValue(ModelUtils.getNetRedundantCutoff(network));
     }
 
 
@@ -91,6 +96,9 @@ public class FilterEnrichmentTableTask extends AbstractTask implements Observabl
                 + evidenceCodes.getSelectedValues());
         List<TermSource> categoryList = categories.getSelectedValues();
         List<String> evidenceList = new ArrayList<>(evidenceCodes.getSelectedValues());
+        ModelUtils.setNetRemoveRedundant(network, removeOverlapping);
+        ModelUtils.setNetRedundantCutoff(network, overlapCutoff.getValue());
+        ModelUtils.setNetSelectedEvidenceCodes(network, evidenceCodes.getSelectedValues());
         if (enrichmentPanel == null) {
             CySwingApplication swingApplication = registrar.getService(CySwingApplication.class);
             CytoPanel cytoPanel = swingApplication.getCytoPanel(CytoPanelName.SOUTH);
