@@ -12,6 +12,18 @@ import org.cytoscape.model.events.*;
 import org.cytoscape.service.util.CyServiceRegistrar;
 import org.cytoscape.util.swing.CyColorPaletteChooserFactory;
 import org.cytoscape.util.swing.IconManager;
+import org.cytoscape.view.model.ContinuousRange;
+import org.cytoscape.view.model.Range;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.table.CyTableView;
+import org.cytoscape.view.model.table.CyTableViewManager;
+import org.cytoscape.view.presentation.property.table.BasicTableVisualLexicon;
+import org.cytoscape.view.model.ContinuousRange;
+import org.cytoscape.view.model.Range;
+import org.cytoscape.view.model.View;
+import org.cytoscape.view.model.table.CyTableView;
+import org.cytoscape.view.model.table.CyTableViewManager;
+import org.cytoscape.view.presentation.property.table.BasicTableVisualLexicon;
 import org.cytoscape.work.TaskIterator;
 import org.cytoscape.work.TaskManager;
 import org.cytoscape.model.events.NetworkAboutToBeDestroyedEvent;
@@ -323,6 +335,7 @@ public class EnrichmentCytoPanel extends JPanel
         if (network == null)
             return;
         initPanel(network, noSignificant);
+//        setTableDesign();
     }
 
     /**
@@ -806,8 +819,24 @@ public class EnrichmentCytoPanel extends JPanel
             } catch (Exception ex) {
                 // ignore and return original value
             }
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
+            Component cell =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row,
                     column);
+//            cell.setBackground();
+            return cell;
         }
+    }
+
+
+    private void setTableDesign() {
+        CyTableViewManager tableViewManager = registrar.getService(CyTableViewManager.class);
+        CyTableView tableView = tableViewManager.getTableView(enrichmentTable);
+        if (tableView == null)
+            return;
+
+        View<CyColumn> colView = tableView.getColumnView(EnrichmentTerm.pvalueColumn);
+        Range<Paint> PAINT_RANGE = new ContinuousRange<>(Paint.class, new Color(255, 255, 255),
+                new Color(154, 154, 154), true, true);
+
+        colView.setVisualProperty(BasicTableVisualLexicon.CELL_BACKGROUND_PAINT,  PAINT_RANGE);
     }
 }

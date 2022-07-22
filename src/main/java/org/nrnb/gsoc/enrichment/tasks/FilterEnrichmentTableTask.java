@@ -1,6 +1,5 @@
 package org.nrnb.gsoc.enrichment.tasks;
 
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.log4j.Logger;
 import org.cytoscape.application.CyApplicationManager;
 import org.cytoscape.application.CyUserLog;
@@ -30,7 +29,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 public class FilterEnrichmentTableTask extends AbstractTask implements ObservableTask {
