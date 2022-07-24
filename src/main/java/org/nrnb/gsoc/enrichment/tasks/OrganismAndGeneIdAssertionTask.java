@@ -37,16 +37,24 @@ public class OrganismAndGeneIdAssertionTask {
         for (OrganismNetworkEntry entry: otherNetworks) {
             otherNetworkParameters.addAll(getList(network, entry.toString()));
         }
-        for (String e: otherNetworkParameters) {
-            if(e != null) {
-                e = e.trim();
-                if (scientificNameToID.containsKey(e)) {
-                    initialOrganism = scientificNameToID.get(e);
+        for (String possibleOrganism: otherNetworkParameters) {
+            if(possibleOrganism != null) {
+                final String trimmedPossibleOrganism = possibleOrganism.trim().toLowerCase();
+                Optional<String> gProfilerOrganism = scientificNameToID.keySet().stream()
+                        .filter(gProfilerName -> trimmedPossibleOrganism.contains(gProfilerName.toLowerCase()))
+                        .findFirst();
+                if (gProfilerOrganism.isPresent()) {
+                    initialOrganism = scientificNameToID.get(gProfilerOrganism.get());
                     break;
                 }
-                else if (scientificNameToID.containsValue(e)) {
-                    initialOrganism = e;
-                    break; // Breaking loop to optimize
+                else {
+                    Optional<Map.Entry<String, String>> gProfilerScientificId = scientificNameToID
+                            .entrySet().stream().filter(keyValuePair -> trimmedPossibleOrganism.contains(
+                                    keyValuePair.getValue().toLowerCase())).findFirst();
+                    if (gProfilerScientificId.isPresent()) {
+                        initialOrganism = gProfilerScientificId.get().getValue();
+                        break; // Breaking loop to optimize
+                    }
                 }
             }
         }
