@@ -51,7 +51,8 @@ import java.util.List;
  */
 public class EnrichmentCytoPanel extends JPanel
         implements CytoPanelComponent2, ActionListener, RowsSetListener, TableModelListener,
-        SelectedNodesAndEdgesListener, NetworkAboutToBeDestroyedListener, SessionLoadedListener {
+        SelectedNodesAndEdgesListener, NetworkAboutToBeDestroyedListener, SessionLoadedListener,
+        NetworkAddedListener {
 
     private CyTable enrichmentTable;
     EnrichmentTableModel tableModel;
@@ -791,6 +792,12 @@ public class EnrichmentCytoPanel extends JPanel
         else
             taskManager.execute(new TaskIterator(new EnrichmentMapAdvancedTask(network, getFilteredTable(),
                     enrichmentTable, false, registrar)));
+    }
+
+    @Override
+    public void handleEvent(NetworkAddedEvent e) {
+        CyNetwork network = applicationManager.getCurrentNetwork();
+        OrganismAndGeneIdAssertionTask.setGeneId(network, registrar);
     }
 
 
