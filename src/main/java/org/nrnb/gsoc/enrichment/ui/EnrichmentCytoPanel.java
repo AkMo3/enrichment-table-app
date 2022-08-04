@@ -25,6 +25,7 @@ import org.nrnb.gsoc.enrichment.tasks.*;
 import org.nrnb.gsoc.enrichment.utils.ModelUtils;
 import org.cytoscape.application.swing.CytoPanelState;
 import org.cytoscape.property.CyProperty;
+import org.nrnb.gsoc.enrichment.utils.SessionUtils;
 
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
@@ -719,6 +720,11 @@ public class EnrichmentCytoPanel extends JPanel
         for (final CyNode node : event.getSelectedNodes()) {
             nodesToFilterSUID.add(node.getSUID());
         }
+        tableModel.filterByNodeSUID(nodesToFilterSUID, true,
+                SessionUtils.getSelectedCategories(network, enrichmentTable),
+                SessionUtils.getSelectedEvidenceCode(network, enrichmentTable),
+                SessionUtils.getRemoveRedundantStatus(network, enrichmentTable),
+                SessionUtils.getRemoveRedundantCutoff(network, enrichmentTable));
         updateLabelRows();
     }
 
