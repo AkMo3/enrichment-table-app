@@ -714,7 +714,7 @@ public class EnrichmentCytoPanel extends JPanel
             return;
 
         CyNetwork network = applicationManager.getCurrentNetwork();
-        if (network == null)
+        if (network == null || tableModel == null)
             return;
         List<Long> nodesToFilterSUID = new ArrayList<Long>();
         for (final CyNode node : event.getSelectedNodes()) {
