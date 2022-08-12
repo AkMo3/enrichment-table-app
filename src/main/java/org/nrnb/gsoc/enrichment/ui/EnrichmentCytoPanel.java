@@ -266,6 +266,9 @@ public class EnrichmentCytoPanel extends JPanel
         JPanel buttonsPanelCenter = new JPanel();
         buttonsPanelCenter.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
 
+        if (ModelUtils.getNetGeneIDColumn(network) == null || ModelUtils.getNetOrganism(network) == null)
+            taskManager.execute(new TaskIterator(new OrganismAndGeneIdAssertionTask()));
+
         if(network == null){
             organismSelect = new JLabel("Organism: null", JLabel.LEFT);
         } else {
@@ -354,6 +357,9 @@ public class EnrichmentCytoPanel extends JPanel
          */
         JPanel buttonsPanelCenter = new JPanel();
         buttonsPanelCenter.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
+
+        if (ModelUtils.getNetGeneIDColumn(network) == null || ModelUtils.getNetOrganism(network) == null)
+            taskManager.execute(new TaskIterator(new OrganismAndGeneIdAssertionTask()));
 
         if(network == null){
             organismSelect = new JLabel("Organism: null", JLabel.LEFT);
