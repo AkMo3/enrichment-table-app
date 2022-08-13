@@ -18,6 +18,9 @@ import org.nrnb.gsoc.enrichment.utils.ModelUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ *
+ */
 public class OrganismAndGeneIdAssertionTask extends AbstractTask {
 
     private static final Logger logger = Logger.getLogger(CyUserLog.NAME);
@@ -26,6 +29,15 @@ public class OrganismAndGeneIdAssertionTask extends AbstractTask {
     public OrganismAndGeneIdAssertionTask() {
     }
 
+    /**
+     * @description Process data from network to predict organism. The process involves getting data from column
+     * present in enum {@code OrganismNetworkEntry}.
+     * It matches the data with the information we retrieved from GProfiler organism information.
+     * It checks if the for any value in GProfiler organisms, the organism is contained inside the column data,
+     * and if present selects the organism.
+     *
+     * @param currentNetwork The current loaded network.
+     */
     public static void setOrganism(final CyNetwork currentNetwork) {
         if (currentNetwork == null) {
             logger.error("[Enrichment Table] No Network selected");

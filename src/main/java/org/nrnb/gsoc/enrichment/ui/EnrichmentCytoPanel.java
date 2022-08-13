@@ -266,7 +266,7 @@ public class EnrichmentCytoPanel extends JPanel
         JPanel buttonsPanelCenter = new JPanel();
         buttonsPanelCenter.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
 
-        if (ModelUtils.getNetGeneIDColumn(network) == null || ModelUtils.getNetOrganism(network) == null)
+        if (network != null && (ModelUtils.getNetGeneIDColumn(network) == null || ModelUtils.getNetOrganism(network) == null))
             taskManager.execute(new TaskIterator(new OrganismAndGeneIdAssertionTask()));
 
         if(network == null){
@@ -358,7 +358,7 @@ public class EnrichmentCytoPanel extends JPanel
         JPanel buttonsPanelCenter = new JPanel();
         buttonsPanelCenter.setLayout(new FlowLayout(FlowLayout.CENTER, 20, 5));
 
-        if (ModelUtils.getNetGeneIDColumn(network) == null || ModelUtils.getNetOrganism(network) == null)
+        if (network != null && (ModelUtils.getNetGeneIDColumn(network) == null || ModelUtils.getNetOrganism(network) == null))
             taskManager.execute(new TaskIterator(new OrganismAndGeneIdAssertionTask()));
 
         if(network == null){
@@ -450,7 +450,6 @@ public class EnrichmentCytoPanel extends JPanel
                 tableManager.addTable(enrichmentTable);
             }
             createJTable(enrichmentTable);
-            System.out.println("Table model: " + tableModel.getColumnCount());
             // Check if values are git mbeing received correctly
             List<CyRow> rows = enrichmentTable.getAllRows();
             availableTables.add(enrichmentTable.getTitle());
