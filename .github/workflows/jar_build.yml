@@ -6,11 +6,13 @@ on:
     paths:
       - "src/main/**.java"
       - .github/workflows/jar_build.yml
+      - pom.xml
   pull_request:
     branches: [ "main" ]
     paths:
       - "src/main/**.java"
       - .github/workflows/jar_build.yml
+      - pom.xml
 
 jobs:
   Build-And-Replace-JAR:
